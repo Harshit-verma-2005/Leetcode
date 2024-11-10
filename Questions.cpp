@@ -989,3 +989,101 @@ public:
         return maxi;
     }
 };
+
+//problem No. 3151
+
+class Solution {
+public:
+    bool isArraySpecial(vector<int>& nums) {
+        int n=nums.size();
+        if(nums.size()==1){
+            return true;
+        }
+        if(nums.size()==2){
+            if(nums[0]%2 == nums[1]%2){
+                return false;
+            }
+        }
+        for(int i=1;i<n-1;i++){
+            if((nums[i-1]%2) == (nums[i]%2) || (nums[i+1]%2) == (nums[i]%2)){
+                return false;
+            }
+        }
+        return true;
+    }
+};
+
+
+//problem No. 905
+
+class Solution {
+public:
+    vector<int> sortArrayByParity(vector<int>& nums) {
+        vector<int> temp;
+         vector<int> temp2;
+        for(int i=0;i<nums.size();i++){
+            if(nums[i]%2==0){
+                temp.push_back(nums[i]);
+            }else{
+                temp2.push_back(nums[i]);
+            }
+        }
+        for(int i=0;i<temp2.size();i++){
+            temp.push_back(temp2[i]);
+        }
+        return temp;
+    }
+};
+
+//problem No. 1480
+class Solution {
+public:
+    vector<int> runningSum(vector<int>& nums) {
+        for(int i=1;i<nums.size();i++){
+            nums[i]=nums[i]+nums[i-1];
+        }
+        return nums;
+    }
+};
+
+//problem No. 1004
+class Solution {
+public:
+    int longestOnes(vector<int>& nums, int k) {
+        int l=0;
+        int r=0;
+        int zeros=0;
+        int maxi=0;
+        int length=0;
+        while(r < nums.size()){
+            if(nums[r] == 0) zeros++;
+            
+            
+            while(zeros > k){
+                if(nums[l] == 0) zeros--;
+                l++;
+            }
+            length=r-l+1;
+            maxi=max(maxi,length);
+            r++;
+        }
+        
+        return maxi;
+    }
+};
+
+//problem No. 1446
+
+
+class Solution {
+public:
+    int maxPower(string s) {
+        int maxi=0;
+        for(int i=0;i<s.size();i++){
+            int j=i+1;
+            while(j < s.size() && s[j] == s[j-1]) j++;
+            maxi=max(maxi,j-i);
+        }
+        return maxi;
+    }
+};
