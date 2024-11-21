@@ -593,6 +593,34 @@ public:
     }
 };
 
+// Problem No. - 46
+
+
+class Solution {
+public:
+    void helper(vector<int> &nums,int index,vector<vector<int>> &ans){
+        //Approach 2 - Without any extra space
+        
+        if(index == nums.size()){
+            ans.push_back(nums);
+            return;
+        }
+        for(int i=index;i<nums.size();i++){
+            swap(nums[i],nums[index]);
+            helper(nums,index+1,ans);
+            swap(nums[i],nums[index]);
+        }
+        
+    }
+    
+    
+    vector<vector<int>> permute(vector<int>& nums) {
+        vector<vector<int>>ans;
+        helper(nums,0,ans);
+        return ans;
+    }
+};
+
 
 // Problem No. - 92
 
@@ -1085,5 +1113,763 @@ public:
             maxi=max(maxi,j-i);
         }
         return maxi;
+    }
+};
+
+//problem No. 2563
+
+
+class Solution {
+public:
+    long long countFairPairs(vector<int>& nums, int lower, int upper) {
+        std::sort(nums.begin(), nums.end());
+        long long count = 0;
+        int n = nums.size();
+        
+        for (int i = 0; i < n - 1; ++i) {
+            int left = LowerBound(nums, i + 1, n - 1, lower - nums[i]);
+            int right = UpperBound(nums, i + 1, n - 1, upper - nums[i]);
+            
+            if (left <= right) {
+                count += (right - left + 1);
+            }
+        }
+        
+        return count;
+    }
+    int LowerBound(vector<int>& nums, int start, int end, int value) {
+        while (start <= end) {
+            int mid = (start + end)/2;
+            if (nums[mid] < value) {
+                start = mid + 1;
+            } else {
+                end = mid - 1;
+            }
+        }
+        return start;  
+    }
+
+    int UpperBound(vector<int>& nums, int start, int end, int value) {
+        while (start <= end) {
+            int mid = (start + end)/2;
+            if (nums[mid] <= value) {
+                start = mid + 1;
+            } else {
+                end = mid - 1;
+            }
+        }
+        return end;  
+    }
+};
+
+
+
+//problem No. 2523
+
+
+class Solution {
+public:
+    vector<int> closestPrimes(int left, int right) 
+    {
+        vector<bool>isPrime(right + 1, true);
+        isPrime[1] = false;
+        vector<int>primes;
+        for (int num = 2; num * num <= right; num++)
+        {
+            if (isPrime[num])
+            {
+                for (int j = num * num; j <= right; j = j + num) isPrime[j] = false;
+            }
+        }
+        
+        for (int i = left; i <= right; i++) 
+        {
+            if (isPrime[i]) primes.push_back(i);  
+        }
+
+        int mnDiff = INT_MAX;
+        int leftAns = -1, rightAns = -1;
+        for (int i = 0; primes.size() != 0 && i < primes.size() - 1; i++)         {
+            int diff = primes[i + 1] - primes[i];
+            if (diff < mnDiff)
+            {   
+                mnDiff = diff;
+                leftAns = primes[i];
+                rightAns = primes[i+1];
+            }
+            else if (diff == mnDiff) leftAns = min(leftAns, primes[i]); 
+        }
+        if (leftAns != -1 && rightAns != -1) return {leftAns, rightAns};
+        else return {-1, -1};
+    }
+};
+
+//problem No. 1492
+
+class Solution {
+public:
+    int kthFactor(int n, int k) {
+        vector<int> factors;
+        for(int i=1;i<=n;i++){
+            if(n % i == 0){
+                factors.push_back(i);
+            }
+        }
+        if(factors.size() < k){
+            return -1;
+        }
+        return factors[k-1];
+
+    }
+};
+
+//problem No. 1952
+
+class Solution {
+public:
+    bool isThree(int n) {
+        int count = 0;
+        if(n==0|| n==1 || n==2 || n==3){
+            return false;
+        }
+        for(int i=1;i<=n;i++){
+            if(n%i == 0){
+                count++;
+            }
+        }
+        if(count == 3){
+            return true;
+        }
+        return false;
+    }
+};
+
+
+//problem No. 258
+class Solution {
+public:
+    int addDigits(int num) {
+        int digit;
+        int sum=0;
+        while(num > 0){
+            digit = num%10;
+            sum+=digit;
+            num = num/10;
+            if(num == 0 && sum > 9){
+                num = sum;
+                sum=0;
+            }
+        }
+        return sum;
+    }
+};
+
+
+//problem No. 229
+
+class Solution {
+public:
+    vector<int> majorityElement(vector<int>& nums) {
+       int n=nums.size();
+       vector<int> ans;
+       unordered_map<int,int> mp;
+       for(int i=0;i<n;i++){
+        mp[nums[i]]++;
+       }
+       for(auto it:mp){
+        if(it.second > n/3){
+            ans.push_back(it.first);
+        }
+       }
+       return ans;
+    }
+};
+
+
+//problem No. 540
+
+class Solution {
+public:
+    int singleNonDuplicate(vector<int>& nums) {
+        int n=nums.size();
+        int start=0;
+        int end=n-1;
+        if(n == 1) return nums[0];
+        if(nums[0] != nums[1]) return nums[0];
+        if(nums[n-1] != nums[n-2]) return nums[n-1];
+
+        while(start <= end){
+            int mid=(start + end)/2;
+            if(nums[mid] != nums[mid+1] && nums[mid] != nums[mid-1]){
+                return nums[mid];
+            }
+            if((mid % 2 ==0 && nums[mid] == nums[mid+1]  ) || 
+            mid % 2 ==1 && nums[mid] == nums [mid-1] ){
+                start = mid+1;
+            }
+            else{
+                end=mid-1;
+            }
+
+        }
+        return -1;
+    }
+};
+
+
+//problem No. 496
+class Solution {
+public:
+    vector<int> nextGreaterElement(vector<int>& nums1, vector<int>& nums2) {
+       stack<int> s;
+       int n=nums2.size();
+        vector<int> temp(n,0);
+    vector<int> ans(nums1.size(),0);
+       for(int i=n-1;i>=0;i--){
+            while( !s.empty() && s.top() <=nums2[i]){
+                s.pop();
+            }
+            if(s.empty()){
+                temp[i] = -1;
+                 s.push(nums2[i]);
+            }else{
+           temp[i] = s.top();
+           s.push(nums2[i]);
+            }
+       }
+
+        for(int i=0;i<nums1.size();i++){
+            for(int j=0;j<nums2.size();j++){
+                if(nums1[i] == nums2[j]){
+                    ans[i] = temp[j];
+                }
+            }
+        }
+
+    return ans;
+    }
+};
+
+//problem No. 160
+class Solution {
+public:
+    ListNode *getIntersectionNode(ListNode *head1, ListNode *head2) {
+        while(head2 != NULL){
+          ListNode *temp=head1;
+          while(temp != NULL){
+            if(temp == head2) return head2;
+            temp=temp->next;
+          }
+          head2=head2->next;
+
+        }
+        return NULL;
+    }
+};
+
+//problem No. 1652
+
+class Solution {
+public:
+    vector<int> decrypt(vector<int>& code, int k) {
+        int n = code.size();
+        if(k==0) return vector<int>(n, 0);
+
+        int i, j;
+        if(k < 0) i = (n+k)%n, j = n-1;
+        else i = 1, j = k;
+
+        int sum = accumulate(code.begin()+i, code.begin()+j+1, 0);
+
+        vector<int> ans(n);
+        for(int ind=0; ind<n; ind++){
+            ans[ind] = sum;
+            sum -= code[i];
+            i = (i+1)%n;
+            j = (j+1)%n;
+            sum += code[j];
+        }
+
+        return ans;
+    }
+};
+
+
+//problem No. 1512
+
+class Solution {
+public:
+    int numIdenticalPairs(vector<int>& nums) {
+        int count=0;
+        for(int i=0;i<nums.size();i++){
+            for(int j=i+1;j<nums.size();j++){
+                if(nums[i] == nums[j]){
+                    count++;
+                }
+            }
+        }
+        return count;
+    }
+};
+
+
+//problem No. 2974
+class Solution {
+public:
+    vector<int> numberGame(vector<int>& nums) {
+        vector<int>ans;
+
+        sort(nums.begin(),nums.end());
+        
+        for(int i=1;i<nums.size();i+=2)
+        {
+           ans.push_back(nums[i]);
+           ans.push_back(nums[i-1]);
+        }
+        
+        
+        
+        return ans;
+    }
+};
+
+//problem No. 3099
+
+class Solution {
+public:
+    int sumOfTheDigitsOfHarshadNumber(int x) {
+        int n=x;
+        int sum=0;
+        int digit;
+        while(n > 0){
+            digit=n%10;
+            sum+=digit;
+            n=n/10;
+        }
+        if(x % sum == 0){
+            return sum;
+        }
+        return -1;
+    }
+};
+
+//problem No.509
+class Solution {
+public:
+    int fib(int n) {
+        int a=0;
+        int b=1;
+        int c=0;
+        if(n==1 || n==0){
+            return n;
+        }
+        for(int i=2;i<=n;i++){
+            c=a+b;
+            a=b;
+            b=c;
+
+        }
+        return c;
+    }
+};
+
+
+//problem No.2130
+
+class Solution {
+public:
+    int pairSum(ListNode* head) {
+        if (!head) return 0;
+
+        ListNode *slow = head, *fast = head;
+        while (fast && fast->next) {
+            slow = slow->next;
+            fast = fast->next->next;
+        }
+
+        ListNode *prev = nullptr, *current = slow, *nextNode = nullptr;
+        while (current != NULL) {
+            nextNode = current->next;
+            current->next = prev;
+            prev = current;
+            current = nextNode;
+        }
+
+        int maxSum = 0;
+        ListNode *firstHalf = head, *secondHalf = prev;
+        while (secondHalf != NULL) {
+            maxSum = max(maxSum, firstHalf->val + secondHalf->val);
+            firstHalf = firstHalf->next;
+            secondHalf = secondHalf->next;
+        }
+
+        return maxSum;
+    }
+};
+
+//problem No.1721
+
+class Solution {
+public:
+    
+    int size(ListNode *head){
+        ListNode *temp=head;
+        int count=0;
+        while(temp!=NULL){
+            count++;
+            temp=temp->next;
+        }
+        return count;
+    }
+    
+    ListNode* swapNodes(ListNode* head, int k) {
+        
+        if(head == NULL || head->next == NULL){
+            return head;
+        }
+        int n=size(head);
+        if(k > n){
+            return head;
+        }
+        ListNode *temp=head;
+        ListNode *temp2=head;
+        
+        
+        
+        for(int i=1;i<k;i++){
+            temp=temp->next;
+        }
+        for(int i=1;i<n-k+1 ;i++){
+            temp2=temp2->next;
+        }
+        swap(temp->val,temp2->val);
+        return head;
+    }
+};
+
+
+//problem No.3254
+class Solution {
+public:
+    vector<int> resultsArray(vector<int>& nums, int k) {
+        vector<int> res;
+        int l = 0;
+        int consec_cnt = 1;
+        
+        for (int r = 0; r < nums.size(); r++) {
+            if (r > 0 && nums[r - 1] + 1 == nums[r]) {
+                consec_cnt++;
+            }
+            
+            if (r - l + 1 > k) {
+                if (nums[l] + 1 == nums[l + 1]) {
+                    consec_cnt--;
+                }
+                l++;
+            }
+            
+            if (r - l + 1 == k) {
+                res.push_back(consec_cnt == k ? nums[r] : -1);
+            }
+        }
+        
+        return res;
+    }
+};
+
+//problem No. 31
+class Solution {
+public:
+    void nextPermutation(vector<int>& nums) {
+        int n=nums.size();
+        int pivot=-1;
+        for(int i=n-2;i>=0;i--){
+            if(nums[i] < nums[i+1]){
+                pivot=i;
+                break;
+            }
+        }
+        
+        if(pivot == -1){
+            reverse(nums.begin(),nums.end());
+            return;
+        }
+        
+        for(int i=n-1;i>=pivot;i--){
+            if(nums[i] > nums[pivot]){
+                swap(nums[i],nums[pivot]);
+                break;
+            }
+        }
+        int st=pivot+1;
+        int end=n-1;
+        while(st < end){
+            swap(nums[st],nums[end]);
+            st++;
+            end--;
+        }
+            
+        
+        
+    }
+};
+
+//problem No. 1574
+
+class Solution {
+public:
+    int findLengthOfShortestSubarray(vector<int>& arr) {
+        int n = arr.size();
+        int left = 0, right = n - 1;
+        while (left < n - 1 && arr[left] <= arr[left + 1]) {
+            left++;
+        }
+        if (left == n - 1) {
+            return 0;
+        }
+        while (right > 0 && arr[right - 1] <= arr[right]) {
+            right--;
+        }
+        int result = min(n - left - 1, right);
+
+        int i = 0, j = right;
+        while (i <= left && j < n) {
+            if (arr[i] <= arr[j]) {
+                result = min(result, j - i - 1);
+                i++;
+            } else {
+                j++;
+            }
+        }
+
+        return result;
+    }
+};
+
+
+//problem No. 215
+class Solution {
+public:
+    int findKthLargest(vector<int>& nums, int k) {
+        int n=nums.size();
+        sort(nums.begin(),nums.end());
+        return nums[n-k];
+    }
+};
+
+//problem No. 2064
+class Solution {
+public:
+  int minimizedMaximum(int n, vector<int>& A) {
+        int left = 1, right = 100000;
+        while (left < right) {
+            int mid = (left + right) / 2, sum = 0;
+            for (int a : A)
+                sum += (a + mid - 1) / mid;
+            if (sum > n)
+                left = mid + 1;
+            else
+                right = mid;
+        }
+        return left;
+    }
+};
+
+//problem No. 567
+class Solution {
+public:
+    
+    bool issame(int freq[],int freq2[]){
+        for(int i=0;i<26;i++){
+            if(freq[i] != freq2[i]){
+                return false;
+            }
+        }
+        return true;
+    }
+    
+    bool checkInclusion(string s1, string s2) {
+        
+        int freq[26]={0};
+        for(int i=0;i<s1.size();i++){
+            freq[s1[i] - 'a']++;
+        }
+        int windowsize=s1.length();
+        for(int i=0;i<s2.length();i++){
+            int freq2[26]={0};
+            int winidx=0;
+            int idx=i;
+            while(winidx < windowsize && idx < s2.length()){
+                freq2[s2[idx]-'a']++;
+                winidx++;idx++;
+                }
+            if(issame(freq,freq2)){
+                return true;
+            }
+            
+        }
+        return false;
+        
+        
+    }
+};
+
+//problem No. 46
+class Solution {
+public:
+    void helper(vector<int> &nums,int index,vector<vector<int>> &ans){
+        //Approach 2 - Without any extra space
+        
+        if(index == nums.size()){
+            ans.push_back(nums);
+            return;
+        }
+        for(int i=index;i<nums.size();i++){
+            swap(nums[i],nums[index]);
+            helper(nums,index+1,ans);
+            swap(nums[i],nums[index]);
+        }
+        
+    }
+    
+    
+    vector<vector<int>> permute(vector<int>& nums) {
+        vector<vector<int>>ans;
+        helper(nums,0,ans);
+        return ans;
+    }
+};
+
+
+
+//problem No. 2563
+
+class Solution {
+public:
+    long long countFairPairs(vector<int>& nums, int lower, int upper) {
+        std::sort(nums.begin(), nums.end());
+        long long count = 0;
+        int n = nums.size();
+        
+        for (int i = 0; i < n - 1; ++i) {
+            int left = LowerBound(nums, i + 1, n - 1, lower - nums[i]);
+            int right = UpperBound(nums, i + 1, n - 1, upper - nums[i]);
+            
+            if (left <= right) {
+                count += (right - left + 1);
+            }
+        }
+        
+        return count;
+    }
+    int LowerBound(vector<int>& nums, int start, int end, int value) {
+        while (start <= end) {
+            int mid = (start + end)/2;
+            if (nums[mid] < value) {
+                start = mid + 1;
+            } else {
+                end = mid - 1;
+            }
+        }
+        return start;  
+    }
+
+    int UpperBound(vector<int>& nums, int start, int end, int value) {
+        while (start <= end) {
+            int mid = (start + end)/2;
+            if (nums[mid] <= value) {
+                start = mid + 1;
+            } else {
+                end = mid - 1;
+            }
+        }
+        return end;  
+    }
+};
+
+//problem No. 204
+class Solution {
+public:
+    int countPrimes(int n) {
+       vector<bool> isprime(n+1,true);
+        int count=0;
+        for(int i=2;i<n;i++){
+            if(isprime[i]){
+            count++;
+                
+                for(int j=2*i;j<n;j=j+i){
+                isprime[j]=false;
+            }
+           
+            }
+    }
+        return count;
+        
+    }
+};
+
+
+//problem No. 78
+class Solution {
+public:
+    vector<vector<int>> subsets(vector<int>& nums) {
+        vector<vector<int>> subs = {{}};
+        for (int j=0;j<nums.size();j++) {
+            int n = subs.size();
+            for (int i = 0; i < n; i++) {
+                subs.push_back(subs[i]); 
+                subs.back().push_back(nums[j]);
+            }
+        }
+        return subs;
+    }
+}; 
+
+
+
+
+//problem No. 3097
+class Solution {
+public:
+   void performOrOperation(vector<int>& bitCount, int& orVal, int n){
+    orVal = (orVal | n);
+    for(int t = 0; t < 32; ++t) bitCount[t] += (n & (1 << t))?1:0;
+}
+
+void nullifyOrOperation(vector<int>& bitCount, int& orVal, int n){
+    for(int t = 0; t < 32; ++t){
+        bitCount[t] += (n & (1 << t))?-1:0;
+        if(bitCount[t] == 0) orVal = orVal & (~(1<<t));
+    }
+}
+
+int minimumSubarrayLength(vector<int>& nums, int k) {
+    int orVal = 0, ans = INT_MAX;
+    vector<int> bitCount(32, 0);
+    for(int i = 0, j = 0; i < nums.size(); ++i){
+        performOrOperation(bitCount, orVal, nums[i]);
+        if(orVal < k) continue; 
+        for( ;j <= i && orVal >= k; j++){
+            nullifyOrOperation(bitCount, orVal, nums[j]);
+            ans = min(ans, i - j + 1);
+        }
+    }
+    return (ans == INT_MAX)? -1: ans;
+}
+};
+
+
+//problem No. 2413
+class Solution {
+public:
+    int smallestEvenMultiple(int n) {
+        int i=1;
+        while(true){
+            if(i % 2 ==0 && i%n == 0){
+                return i;
+            }
+            i++;
+        }
+        return 0;
     }
 };
